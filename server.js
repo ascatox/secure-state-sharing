@@ -1,4 +1,5 @@
 const OCB_URL = 'http://localhost:1026'; //TODO Config file
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -22,16 +23,15 @@ const eventId = 'SSS-EVENT';
 
 const ledger = async () => {
     ledgerClient = await nodeLedgerClient.LedgerClient.init(config);
-    await chaincodeEventSubscribe(eventId, peerName).then((handle) => {
-        console.log('Handler received ' + JSON.stringify(handle));
-        handler = handle;
-    }, (err) => {
-        console.error('Handler received ' + err);
-    });
+    // await chaincodeEventSubscribe(eventId, peerName).then((handle) => {
+    //     console.log('Handler received ' + JSON.stringify(handle));
+    //     handler = handle;
+    // }, (err) => {
+    //     console.error('Handler received ' + err);
+    // });
 };
 ledger();
 const ngsiConnection = new NGSI.Connection(OCB_URL);
-
 // app.use(errorHandler);
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
@@ -74,18 +74,24 @@ async function updateByBlockchain(req) {
         entity = mergeWithDataFromRequest(req, entity.entity);
         let rez, entityUpd = null;
         if (entity) {
-            rez = await ledgerClient.doInvoke('putData', [KEY_CHAIN, JSON.stringify(entity)]); //TODO
+            rez = await ledgerClient.doInvokeWithTxId('putData', [KEY_CHAIN, JSON.stringify(entity)]); //TODO
         }
-        /*if (rez) {
-            // entityUpd = await ledgerClient.doInvoke('getData', [KEY_CHAIN]); //TODO
-
+        if (rez) {
+            ledgerClient.registerTxEvent(peerName, rez.tx_id, (event) => {
+                const tx_id = txId;
+                if (event) {
+                    console.log('Transaction ' + txId + ' correctly committed to the chain.');
+                    entityUpd = await ledgerClient.doInvoke('getData', [KEY_CHAIN]); //TODO
+                    console.log("Entity coming from CHAIN is now: \n" + entityUpd);
+                    const entityUpdObj = JSON.parse(entityUpd);
+                    await updatetEntity(entityUpdObj);
+                    return await getEntity(entity.id, TYPE);
+                }
+            }, (err) => {
+                console.error(('Errore ricevuto nella transazione ' + txId + ' with error: ' + err));
+                throw new Error(err);
+            });
         }
-       if (entityUpd) {
-            console.log("Entity coming from CHAIN is now: \n" + entityUpd);
-            const entityUpdObj = JSON.parse(entityUpd);
-            await updatetEntity(entityUpdObj);
-            return await getEntity(entity.id, TYPE);
-        }*/
     } catch (error) {
         console.error(error);
         throw new Error(error);
@@ -100,7 +106,7 @@ function extractAttributesFromEventPayload(eventPayload) {
     return attributes;
 }
 
-async function chaincodeEventSubscribe(eventId, peerName) {
+/*async function chaincodeEventSubscribe(eventId, peerName) {
     return ledgerClient.registerChaincodeEvent(ccid, peerName, eventId, (event) => {
         console.log('Event arrived with name: ' + (event.event_name) +
             ' and with payload ' + (Buffer.from(event.payload)));
@@ -132,8 +138,7 @@ async function chaincodeEventSubscribe(eventId, peerName) {
             });
         }, 1000);
     });
-}
-
+}*/
 
 async function updateEntityFromRequest(entityId) {
     try {
