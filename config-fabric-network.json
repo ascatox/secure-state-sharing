@@ -6,10 +6,10 @@
     "cryptoconfigdir": "/Users/ascatox/Desktop/crypto-config",
     "tls": false,
     "chaincode": {
-      "path": "analytics-chaincode",
-      "name": "analytics-chaincode",
-      "version": "1.0",
-      "lang": "NODE"
+      "path": "sss-chaincode",
+      "name": "sss-chaincode",
+      "version": "1.0"
+      
     },
     "organizations": [
       {
