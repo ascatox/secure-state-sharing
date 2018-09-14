@@ -3,12 +3,12 @@
     "type": "hlfv1.1",
     "channelName": "ledgerchannel",
     "timeout": 5000,
-    "cryptoconfigdir": "/Users/ascatox/Desktop/crypto-config",
+    "cryptoconfigdir": "/Users/ascatox/Desktop/crypto-users",
     "tls": false,
     "chaincode": {
       "path": "sss-chaincode",
       "name": "sss-chaincode",
-      "version": "1.0"
+      "version": "1.3"
       
     },
     "organizations": [
@@ -34,9 +34,9 @@
         ],
         "users": [
           {
-            "name": "Admin",
+            "name": "operator",
             "roles": [
-              "admin"
+              "user"
             ]
           }
         ]
