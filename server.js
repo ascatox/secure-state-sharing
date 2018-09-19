@@ -1,4 +1,5 @@
-const OCB_URL = 'http://localhost:1026'; //TODO Config file
+const CONFIG = require('./resources/config.json');
+const OCB_URL = CONFIG.ocb;
 
 const express = require('express');
 const app = express();
@@ -53,7 +54,7 @@ app.all("/*", function (req, res) {
                         if (result)
                             console.log("Update correclty executed with result\n" + JSON.stringify(result));
                     }).catch((error) => {
-                        console.error('Error encountered : ' + error.message);
+                        console.error('Error encountered : ' + JSON.stringify(error));
                     });
                 } catch (error) {
                     console.error(error);
