@@ -6,9 +6,9 @@
   "cryptoconfigdir": "/Users/ascatox/Desktop/crypto-config",
   "tls": false,
   "chaincode": {
-    "path": "sss-master-chaincode-node",
-    "name": "sss-master-chaincode-node",
-    "version": "1.5",
+    "path": "sss-chaincode-node",
+    "name": "sss-chaincode-node",
+    "version": "1.0",
     "lang": "NODE"
 
   },

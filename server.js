@@ -1,16 +1,17 @@
+'use strict';
+
 const CONFIG = require('./resources/config.json');
 const OCB_URL = CONFIG.ocb;
 
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-//const httpProxy = require('http-proxy'); //https://github.com/nodejitsu/node-http-proxy
-//const apiProxy = httpProxy.createProxyServer();
-
-//const proxy = require('http-proxy-middleware');
-const blockchainHandler = require('./lib/blockchainHandler');
-const requestHandler = require('./lib/requestHandler');
-const orionHandler = require('./lib/orionHandler');
+const BlockchainHandler = require('./lib/blockchainHandler');
+const blockchainHandler = new BlockchainHandler();
+const RequestHandler = require('./lib/requestHandler');
+const requestHandler = new RequestHandler();
+const OrionHandler = require('./lib/orionHandler');
+const orionHandler = new OrionHandler();
 
 let timeoutId;
 app.use(errorHandler);
@@ -46,10 +47,11 @@ app.all("/*", function (req, res) {
         } else if (requestHandler.isOnBehalfOfChain(req)) { //I'm updating attributes
             const run = async () => {
                 try {
-                    let entity = await orionHandler.getEntity(requestHandler.getId(req), orionHandler.TYPE);
+                    let entity = await orionHandler.getEntity(requestHandler.getId(req), requestHandler.getType(req));
                     if (entity && entity.hasOwnProperty('entity'))
                         entity = entity.entity;
                     //requestHandler.validateEntity(entity);
+                    await orionHandler.createMasterContext(entity.id, entity.type);
                     blockchainHandler.updateByBlockchain(entity).then((result) => {
                         if (result)
                             console.log("Update correclty executed with result\n" + JSON.stringify(result));
