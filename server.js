@@ -6,6 +6,7 @@ const OCB_URL = CONFIG.ocb;
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+
 const BlockchainHandler = require('./lib/blockchainHandler');
 const blockchainHandler = new BlockchainHandler();
 const RequestHandler = require('./lib/requestHandler');
@@ -32,7 +33,7 @@ app.all("/*", function (req, res) {
     //     next(e);
     // });
     try {
-        if (req.path.indexOf('v1') > 0) {
+        if (req.path.indexOf('v1') >= 0) {
             res.status(400).send("Warning!!! v1 APIs not supported use v2 -> http://telefonicaid.github.io/fiware-orion/api/v2/stable/");
             return;
         }
@@ -52,17 +53,17 @@ app.all("/*", function (req, res) {
                         entity = entity.entity;
                     //requestHandler.validateEntity(entity);
                     await orionHandler.createMasterContext(entity.id, entity.type);
-                    blockchainHandler.updateByBlockchain(entity).then((result) => {
+                    blockchainHandler.updateByBlockchain(entity, requestHandler.isUpdate(req)).then((result) => {
                         if (result)
                             console.log("Update correclty executed with result\n" + JSON.stringify(result));
-                    }).catch((error) => {
+                    }).catch(error => {
                         console.error('Error encountered : ' + JSON.stringify(error));
                     });
                 } catch (error) {
                     console.error(error);
                 }
             };
-            timeoutId = setTimeout(run, 5000);
+            timeoutId = setTimeout(run, CONFIG.timeout);
             /*res.writeHead(200, {
                 'Content-Type': 'text/plain'
             });

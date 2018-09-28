@@ -1,3 +1,6 @@
 {
-    "ocb": "http://localhost:1026"
+    "ocb": "http://localhost:1026",
+    "timeout": 2000,
+    "path_exclude": "subscriptions, op",
+    "attrs_keyword": "attrs"
 }
