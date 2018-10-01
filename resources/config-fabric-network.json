@@ -10,7 +10,6 @@
     "name": "sss-chaincode-node",
     "version": "1.0",
     "lang": "NODE"
-
   },
   "organizations": [{
       "domainName": "org1.example.com",
