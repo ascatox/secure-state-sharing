@@ -1,5 +1,5 @@
 {
-    "debug": true,
+    "development": true,
     "ocb": "http://localhost:1026",
     "timeout": 2000,
     "path_exclude": "subscriptions, op",
