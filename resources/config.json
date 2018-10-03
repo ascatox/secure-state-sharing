@@ -1,7 +1,9 @@
 {
+    "debug": true,
     "ocb": "http://localhost:1026",
     "timeout": 2000,
     "path_exclude": "subscriptions, op",
     "attrs_keyword": "attrs",
-    "peer_number" : 0
+    "peer_number": 0,
+    "logLevel": "debug"
 }

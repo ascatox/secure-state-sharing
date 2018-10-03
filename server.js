@@ -7,11 +7,14 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-const SecureStateController = require('./secureStateController');
-const secureStateController = new SecureStateController();
+const SecureStateSharing = require('./secureStateSharing');
+const secureStateSharing = new SecureStateSharing();
 
 const RequestHandler = require('./lib/requestHandler');
 const requestHandler = new RequestHandler();
+
+const LoggerManager = require('./lib/LoggerManager');
+const loggerManager = new LoggerManager();
 
 let timeoutId;
 app.use(errorHandler);
@@ -40,13 +43,13 @@ app.all("/*", function (req, res) {
             const id = requestHandler.getId(req);
             const type = requestHandler.getType(req);
             const run = async () => {
-                secureStateController.executeRequest(id, type, req.method);
+                secureStateSharing.executeRequest(id, type, req.method);
             };
             timeoutId = setTimeout(run, CONFIG.timeout);
         }
         return res.redirect(307, OCB_URL + req.path);
     } catch (error) {
-        console.error(error);
+        loggerManager.error(error);
         clearTimeout(timeoutId);
         next(error);
     }

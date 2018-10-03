@@ -5,9 +5,12 @@ const requestHandler = new RequestHandler();
 const OrionHandler = require('./lib/orionHandler');
 const orionHandler = new OrionHandler();
 
+const LoggerManager = require('./lib/LoggerManager');
+const loggerManager = new LoggerManager();
+
 let id = null;
 let type = null;
-class SecureStateController {
+class SecureStateSharing {
     constructor() {}
 
     async executeRequest(id_, type_, requestType) {
@@ -23,7 +26,7 @@ class SecureStateController {
                     entity = await blockchainHandler.getEntity(id, type);
                     orionHandler.createContext(entity);
                 } else
-                    console.error('Context not present in Orion');
+                    loggerManager.error('Context not present in Orion');
             }
             entityOld = JSON.parse(JSON.stringify(entity));
             //Orion has already build the context local, build the Master
@@ -35,7 +38,7 @@ class SecureStateController {
                 blockchainHandler.registerTxEvent(txId, this.onEvent, this.onError);
             }
         } catch (error) {
-            console.error(error);
+            loggerManager.error(error);
             if (entityOld)
                 orionHandler.updateEntity(entityOld);
             throw new Error(error);
@@ -45,16 +48,16 @@ class SecureStateController {
 
     async onEvent(transactionId) {
         if (transactionId) {
-            console.log('Transaction ' + transactionId + ' correctly committed to the chain.');
+            loggerManager.debug('Transaction ' + transactionId + ' correctly committed to the chain.');
             let entityUpd = await blockchainHandler.getEntity(id, type);
             const result = await orionHandler.updateEntityMasterFromChain(entityUpd);
-            console.log("Update executed by Blockchain with OCB updated!!!\nFinal entity ->\n" +
+            loggerManager.debug("Update executed by Blockchain with OCB updated!!!\nFinal entity ->\n" +
                 JSON.stringify(result.entity));
         }
 
     }
     async onError(error) {
-        console.error(('Error received in transaction:  with error: ' + error));
+        loggerManager.error(('Error received in transaction:  with error: ' + error));
         throw new Error(err);
     }
 
@@ -74,10 +77,9 @@ class SecureStateController {
         } else { //Update
             if (!result) {
                 throw new Error('Could not update entity not present in Blockchain');
-                return true;
             }
         }
     }
 }
 
-module.exports = SecureStateController;
+module.exports = SecureStateSharing;
