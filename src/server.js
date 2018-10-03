@@ -1,6 +1,6 @@
 'use strict';
 
-const CONFIG = require('./resources/config.json');
+const CONFIG = require('../resources/config.json');
 const OCB_URL = CONFIG.ocb;
 
 const express = require('express');

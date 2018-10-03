@@ -1,5 +1,5 @@
 const winston = require('winston');
-const CONFIG = require('../resources/config.json');
+const CONFIG = require('../../resources/config.json');
 
 
 class LoggerManager {

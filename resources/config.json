@@ -1,6 +1,8 @@
 {
     "development": true,
     "ocb": "http://localhost:1026",
+    "service": "",
+    "servicePath": "",
     "timeout": 2000,
     "path_exclude": "subscriptions, op",
     "attrs_keyword": "attrs",

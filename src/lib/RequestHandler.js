@@ -1,6 +1,6 @@
 'use strict';
-const CONFIG = require('../resources/config.json');
-const OrionHandler = require('./orionHandler');
+const CONFIG = require('../../resources/config.json');
+const OrionHandler = require('./OrionHandler');
 const orionHandler = new OrionHandler();
 
 const LoggerManager = require('./LoggerManager');

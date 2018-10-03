@@ -1,5 +1,5 @@
 'use strict';
-const CONFIG = require('../resources/config.json');
+const CONFIG = require('../../resources/config.json');
 const OCB_URL = CONFIG.ocb;
 const NGSI = require('ngsijs');
 const ngsiConnection = new NGSI.Connection(OCB_URL);

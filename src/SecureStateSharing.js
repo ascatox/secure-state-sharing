@@ -1,8 +1,6 @@
-const BlockchainHandler = require('./lib/blockchainHandler');
+const BlockchainHandler = require('./lib/BlockchainHandler');
 const blockchainHandler = new BlockchainHandler();
-const RequestHandler = require('./lib/requestHandler');
-const requestHandler = new RequestHandler();
-const OrionHandler = require('./lib/orionHandler');
+const OrionHandler = require('./lib/OrionHandler');
 const orionHandler = new OrionHandler();
 
 const LoggerManager = require('./lib/LoggerManager');
