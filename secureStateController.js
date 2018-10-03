@@ -5,12 +5,14 @@ const requestHandler = new RequestHandler();
 const OrionHandler = require('./lib/orionHandler');
 const orionHandler = new OrionHandler();
 
+let id = null;
+let type = null;
 class SecureStateController {
-
     constructor() {}
 
-
-    async executeRequest(id, type, requestType) {
+    async executeRequest(id_, type_, requestType) {
+        id = id_;
+        type = type_;
         let entity, entityOld = null;
         try {
             entity = await orionHandler.getEntity(id, type);
@@ -29,7 +31,7 @@ class SecureStateController {
             const isUpdate = await this.isUpdate(requestType, entity);
             const result = await blockchainHandler.editEntity(entity, isUpdate);
             if (result) {
-                const txId = rez.tx_id.getTransactionID();
+                const txId = result.tx_id.getTransactionID();
                 blockchainHandler.registerTxEvent(txId, this.onEvent, this.onError);
             }
         } catch (error) {
@@ -44,21 +46,19 @@ class SecureStateController {
     async onEvent(transactionId) {
         if (transactionId) {
             console.log('Transaction ' + transactionId + ' correctly committed to the chain.');
-            let entityUpd = await blockchainHandler.getEntity(entity.id, entity.type);
+            let entityUpd = await blockchainHandler.getEntity(id, type);
             const result = await orionHandler.updateEntityMasterFromChain(entityUpd);
             console.log("Update executed by Blockchain with OCB updated!!!\nFinal entity ->\n" +
                 JSON.stringify(result.entity));
         }
 
     }
-
-
     async onError(error) {
         console.error(('Error received in transaction:  with error: ' + error));
         throw new Error(err);
     }
 
-    async isMigration(id, type) {
+    async isMigration() {
         const result = await blockchainHandler.getEntity(id, type);
         if (result) return true;
         return false;
@@ -78,7 +78,6 @@ class SecureStateController {
             }
         }
     }
-
 }
 
 module.exports = SecureStateController;
