@@ -1,3 +1,4 @@
+'use strict'
 const BlockchainHandler = require('./lib/BlockchainHandler');
 const blockchainHandler = new BlockchainHandler();
 const OrionHandler = require('./lib/OrionHandler');
