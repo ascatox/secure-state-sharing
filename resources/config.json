@@ -1,5 +1,5 @@
 {
-    "development": true,
+    "development": false,
     "ocb": "http://localhost:1026",
     "service": "",
     "servicePath": "",

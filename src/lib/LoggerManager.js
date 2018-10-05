@@ -1,6 +1,7 @@
 'use strict'
 const winston = require('winston');
 const CONFIG = require('../../resources/config.json');
+const chalk = require('chalk');
 
 
 class LoggerManager {
@@ -30,20 +31,20 @@ class LoggerManager {
     }
     info(message) {
         if (!CONFIG.development)
-            this.logger.log('info', message);
+            this.logger.log('info', chalk.blue(message));
         else console.log(message);
 
     }
 
     warn(message) {
         if (!CONFIG.development)
-            this.logger.log('warn', message);
+            this.logger.log('warn', chalk.yellow(message));
         else console.error(message);
     }
 
     error(error) {
         if (!CONFIG.development)
-            this.logger.log('error', error);
+            this.logger.log('error', chalk.error(error));
         else console.error(message);
     }
 
