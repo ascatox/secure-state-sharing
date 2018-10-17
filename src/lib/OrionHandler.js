@@ -8,6 +8,7 @@ const LoggerManager = require('./LoggerManager');
 const loggerManager = new LoggerManager();
 
 
+const MASTER = '_master';
 class OrionHandler {
 
     constructor() {
@@ -18,7 +19,7 @@ class OrionHandler {
 
     async updateEntityMasterFromChain(entity) {
         try {
-            const id = JSON.parse(entity).id + '_master';
+            const id = JSON.parse(entity).id + MASTER;
             const type = JSON.parse(entity).type;
             loggerManager.debug("Entity coming from CHAIN is now: \n" + entity);
             const entityUpdObj = JSON.parse(entity);
@@ -31,6 +32,15 @@ class OrionHandler {
         }
     }
 
+    async revertLocalChanges(id_, type_) {
+        if (id_ || type_) {
+            const id = id_ + MASTER;
+            const master = await this.getEntity(id, type_);
+            master.id = id_;
+            await this.updateEntity(master);
+        }
+    }
+
 
     async getEntity(id, type) {
         let entity = null;
@@ -38,21 +48,36 @@ class OrionHandler {
             entity = await ngsiConnection.v2.getEntity({
                 id: id,
                 type: type,
-                //service: config.service,
-                //servicepath: config.subservice
+                service: CONFIG.service,
+                servicepath: CONFIG.servicepath
             });
         } catch (error) {
-            loggerManager.error('Entity ' + id + 'not found on Orion ' + error);
+            loggerManager.error('Entity ' + id + ' not found on Orion ' + error);
             entity = null;
         }
         return entity;
+    }
+
+    async listEntities() {
+        try {
+            return ngsiConnection.v2.listEntities({
+                service: CONFIG.service,
+                servicepath: CONFIG.servicepath
+            });
+        } catch (error) {
+            loggerManager.error(error);
+            throw new Error(error);
+        }
     }
 
     async updateEntity(entity) {
         //service: config.service,
         //servicepath: config.subservice
         try {
-            return await ngsiConnection.v2.appendEntityAttributes(entity);
+            return await ngsiConnection.v2.appendEntityAttributes(entity, {
+                service: CONFIG.service,
+                servicepath: CONFIG.servicepath
+            });
         } catch (error) {
             loggerManager.error(error);
             throw new Error(error);
@@ -61,7 +86,24 @@ class OrionHandler {
 
     async createEntity(entity) {
         try {
-            return await ngsiConnection.v2.createEntity(entity);
+            return await ngsiConnection.v2.createEntity(entity, {
+                service: CONFIG.service,
+                servicepath: CONFIG.servicepath
+            });
+        } catch (error) {
+            loggerManager.error(error);
+            throw new Error(error);
+        }
+    }
+
+    async deleteEntity(id, type) {
+        try {
+            await ngsiConnection.v2.deleteEntity({
+                id: id,
+                type: type,
+                service: CONFIG.service,
+                servicepath: CONFIG.servicepath
+            });
         } catch (error) {
             loggerManager.error(error);
             throw new Error(error);
@@ -70,7 +112,7 @@ class OrionHandler {
 
     buildEntityMaster(entity) {
         const entityMASTER = JSON.parse(JSON.stringify(entity.entity));
-        entityMASTER.id += '_master';
+        entityMASTER.id += MASTER;
         return entityMASTER;
     }
 

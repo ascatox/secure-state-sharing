@@ -1,147 +1,159 @@
-// process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'test';
 
-// let chai = require('chai');
-// let chaiHttp = require('chai-http');
-// let server = require('../server');
-// let should = chai.should();
+let chai = require('chai');
+const assert = chai.assert;
+let chaiHttp = require('chai-http');
+let server = require('../src/server');
 
-// chai.use(chaiHttp);
+const CONFIG = require('../resources/config.json');
 
-// describe('Books', () => {
-//     beforeEach((done) => {
-//         Book.remove({}, (err) => {
-//             done();
-//         });
-//     });
-//     describe('/GET book', () => {
-//         it('it should GET all the books', (done) => {
-//             chai.request(server)
-//                 .get('/book')
-//                 .end((err, res) => {
-//                     res.should.have.status(200);
-//                     res.body.should.be.a('array');
-//                     res.body.length.should.be.eql(0);
-//                     done();
-//                 });
-//         });
-//     });
-//     describe('/POST book', () => {
-//         it('it should not POST a book without pages field', (done) => {
-//             let book = {
-//                 title: "The Lord of the Rings",
-//                 author: "J.R.R. Tolkien",
-//                 year: 1954
-//             }
-//             chai.request(server)
-//                 .post('/book')
-//                 .send(book)
-//                 .end((err, res) => {
-//                     res.should.have.status(200);
-//                     res.body.should.be.a('object');
-//                     res.body.should.have.property('errors');
-//                     res.body.errors.should.have.property('pages');
-//                     res.body.errors.pages.should.have.property('kind').eql('required');
-//                     done();
-//                 });
-//         });
-//         it('it should POST a book ', (done) => {
-//             let book = {
-//                 title: "The Lord of the Rings",
-//                 author: "J.R.R. Tolkien",
-//                 year: 1954,
-//                 pages: 1170
-//             }
-//             chai.request(server)
-//                 .post('/book')
-//                 .send(book)
-//                 .end((err, res) => {
-//                     res.should.have.status(200);
-//                     res.body.should.be.a('object');
-//                     res.body.should.have.property('message').eql('Book successfully added!');
-//                     res.body.book.should.have.property('title');
-//                     res.body.book.should.have.property('author');
-//                     res.body.book.should.have.property('pages');
-//                     res.body.book.should.have.property('year');
-//                     done();
-//                 });
-//         });
-//     });
-//     describe('/GET/:id book', () => {
-//         it('it should GET a book by the given id', (done) => {
-//             let book = new Book({
-//                 title: "The Lord of the Rings",
-//                 author: "J.R.R. Tolkien",
-//                 year: 1954,
-//                 pages: 1170
-//             });
-//             book.save((err, book) => {
-//                 chai.request(server)
-//                     .get('/book/' + book.id)
-//                     .send(book)
-//                     .end((err, res) => {
-//                         res.should.have.status(200);
-//                         res.body.should.be.a('object');
-//                         res.body.should.have.property('title');
-//                         res.body.should.have.property('author');
-//                         res.body.should.have.property('pages');
-//                         res.body.should.have.property('year');
-//                         res.body.should.have.property('_id').eql(book.id);
-//                         done();
-//                     });
-//             });
+const service = CONFIG.service;
+const servicepath = CONFIG.servicePath;
 
-//         });
-//     });
-//     describe('/PUT/:id book', () => {
-//         it('it should UPDATE a book given the id', (done) => {
-//             let book = new Book({
-//                 title: "The Chronicles of Narnia",
-//                 author: "C.S. Lewis",
-//                 year: 1948,
-//                 pages: 778
-//             })
-//             book.save((err, book) => {
-//                 chai.request(server)
-//                     .put('/book/' + book.id)
-//                     .send({
-//                         title: "The Chronicles of Narnia",
-//                         author: "C.S. Lewis",
-//                         year: 1950,
-//                         pages: 778
-//                     })
-//                     .end((err, res) => {
-//                         res.should.have.status(200);
-//                         res.body.should.be.a('object');
-//                         res.body.should.have.property('message').eql('Book updated!');
-//                         res.body.book.should.have.property('year').eql(1950);
-//                         done();
-//                     });
-//             });
-//         });
-//     });
-//     /*
-//      * Test the /DELETE/:id route
-//      */
-//     describe('/DELETE/:id book', () => {
-//         it('it should DELETE a book given the id', (done) => {
-//             let book = new Book({
-//                 title: "The Chronicles of Narnia",
-//                 author: "C.S. Lewis",
-//                 year: 1948,
-//                 pages: 778
-//             })
-//             book.save((err, book) => {
-//                 chai.request(server)
-//                     .delete('/book/' + book.id)
-//                     .end((err, res) => {
-//                         res.should.have.status(200);
-//                         res.body.should.be.a('object');
-//                         res.body.should.have.property('message').eql('Book successfully deleted!');
-//                         res.body.result.should.have.property('ok').eql(1);
-//                         res.body.result.should.have.property('n').eql(1);
-//                         done();
-//                     });
-//             });
-//         });
-//     });
-// });
+const SecureStateSharing = require('../src/SecureStateSharing');
+const secureStateSharing = new SecureStateSharing();
+const orionHandler = secureStateSharing.getOrionHandler();
+let entity = null;
+const TIMEOUT_TEST = 9000;
+chai.use(chaiHttp);
+
+function createMockEntity() {
+    const rand = Math.floor((Math.random() * 100) + 1);
+    entity = {
+        "id": "Room" + rand,
+        "type": "Room",
+
+        "temperature": {
+            "value": 3323,
+            "type": "Float"
+        },
+        "pressure": {
+            "value": 720,
+            "type": "Integer"
+        }
+    };
+}
+
+async function postEntity() {
+    try {
+        chai.request(server)
+            .post('/v2/entities')
+            .set('Content-Type', 'application/json')
+            .set('Fiware-Service', 'testService')
+            .set('Fiware-ServicePath', '/testSubService')
+            .send(entity)
+            .end((err, res) => {
+                assert.equals(res.status, 201);
+                const post = async () => {
+                    const entityRes = await orionHandler.getEntity(entity.id, entity.type);
+                    const id = entity.id + '_master';
+                    const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+                    assert.equal(entityRes.entity.temperature.value, entityMasterRes.entity.temperature.value);
+                    assert.equal(entityRes.entity.pressure.value, entityMasterRes.entity.pressure.value);
+                }
+                setTimeout(post, CONFIG.timeout + TIMEOUT_TEST);
+            });
+
+    } catch (error) {
+        console.error(error);
+        assert.fail(error);
+    }
+
+}
+
+async function putEntireEntity() {
+    try {
+        entity.temperature.value = 6666;
+        entity.pressure.value = 0;
+        chai.request(server)
+            .put('/v2/entities')
+            .set('Content-Type', 'application/json')
+            .set('Fiware-Service', 'testService')
+            .set('Fiware-ServicePath', '/testSubService')
+            .send(entity)
+            .end((err, res) => {
+                assert.isBelow(res.status, 300);
+            });
+        const put = async () => {
+            const entityRes = await orionHandler.getEntity(entity.id, entity.type);
+            const id = entity.id + '_master';
+            const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+            assert.equal(entityRes.entity.temperature.value, 6666);
+            assert.equal(entityRes.entity.pressure.value, 0);
+
+            assert.equal(entityMasterRes.entity.temperature.value, 6666);
+            assert.equal(entityMasterRes.entity.pressure.value, 0);
+        }
+        setTimeout(put, CONFIG.timeout + TIMEOUT_TEST);
+    } catch (error) {
+        console.error(error);
+        assert.fail(error);
+    }
+}
+
+async function putPartialEntity() {
+    try {
+        entity.pressure.value = -1;
+        chai.request(server)
+            .put('/v2/entities/Room001/attrs/pressure?type=Room')
+            .set('Content-Type', 'application/json')
+            .set('Fiware-Service', 'testService')
+            .set('Fiware-ServicePath', '/testSubService')
+            .send(entity)
+            .end((err, res) => {
+                assert.isBelow(res.status, 300);
+            });
+        const put = async () => {
+            const entityRes = await orionHandler.getEntity(entity.id, entity.type);
+            const id = entity.id + '_master';
+            const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+            assert.equal(entityRes.entity.pressure.value, -1);
+            assert.equal(entityMasterRes.entity.pressure.value, -1);
+        }
+        setTimeout(put, CONFIG.timeout + TIMEOUT_TEST);
+    } catch (error) {
+        console.error(error);
+        assert.fail(error);
+    }
+}
+
+
+
+describe('Entities', () => {
+    before(() => {
+        createMockEntity();
+    });
+
+    /*after(async () => {
+         try {
+             const response = await orionHandler.listEntities();
+             if (response.results)
+                 for (const res of response.results) {
+                     await orionHandler.deleteEntity(res.id, res.type);
+                 }
+         } catch (error) {
+             console.error(error)
+         }
+     });*/
+
+    describe('/GET entities', () => {
+        it('it should GET all the entities in OCB', () => {
+            chai.request(server)
+                .get('/v2/entities')
+                .end((err, res) => {
+                    assert.equal(res.status, 200);
+                    assert.typeOf(res.body, 'array');
+                });
+        });
+    });
+
+
+
+    describe('Creation', () => {
+        it('it should POST Entity and MASTER TWIN on root API', postEntity);
+    });
+    describe('Update', () => {
+        it('it should PUT Entity data full entity', putEntireEntity);
+        it('it should PUT Entity partial data', putPartialEntity);
+    });
+});

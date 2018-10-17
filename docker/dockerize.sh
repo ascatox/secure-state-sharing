@@ -5,3 +5,4 @@ if [ "$1" == "" ]; then
 	exit 0
 fi
 docker build -t ascatox/secure-state-sharing:$1 .
+

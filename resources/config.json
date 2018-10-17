@@ -1,11 +1,12 @@
 {
-    "development": false,
+    "development": true,
     "ocb": "http://localhost:1026",
-    "service": "",
-    "servicePath": "",
+    "service": "testService",
+    "servicepath": "/testSubService",
     "timeout": 2000,
     "path_exclude": "subscriptions, op",
     "attrs_keyword": "attrs",
     "peer_number": 0,
-    "logLevel": "debug"
+    "logLevel": "debug",
+    "revertChangesTimeout": 86400000 
 }

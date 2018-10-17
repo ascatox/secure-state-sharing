@@ -9,6 +9,7 @@ const loggerManager = new LoggerManager();
 
 let id = null;
 let type = null;
+let timeoutId = null;
 class SecureStateSharing {
     constructor() {}
 
@@ -27,7 +28,7 @@ class SecureStateSharing {
                 } else
                     loggerManager.error('Context not present in Orion');
             }
-            entityOld = JSON.parse(JSON.stringify(entity));
+            //entityOld = JSON.parse(JSON.stringify(entity));
             //Orion has already build the context local, build the Master
             await orionHandler.createMasterContext(id, type);
             const isUpdate = await this.isUpdate(requestType, entity);
@@ -35,11 +36,13 @@ class SecureStateSharing {
             if (result) {
                 const txId = result.tx_id.getTransactionID();
                 blockchainHandler.registerTxEvent(txId, this.onEvent, this.onError);
+                // timeoutId = setTimeout(orionHandler.revertLocalChanges(entity.id, entity.type), CONFIG.revertChangesTimeout); //TODO
             }
         } catch (error) {
             loggerManager.error(error);
-            if (entityOld)
-                orionHandler.updateEntity(entityOld);
+            // if (entityOld)
+            //     orionHandler.updateEntity(entityOld);
+            orionHandler.revertLocalChanges(entity.id, entity.type);
             throw new Error(error);
         }
     }
@@ -48,13 +51,15 @@ class SecureStateSharing {
     async onEvent(transactionId) {
         if (transactionId) {
             loggerManager.debug('Transaction ' + transactionId + ' correctly committed to the chain.');
+            if (timeoutId)
+                clearTimeout(timeoutId);
             let entityUpd = await blockchainHandler.getEntity(id, type);
             const result = await orionHandler.updateEntityMasterFromChain(entityUpd);
             loggerManager.debug("Update executed by Blockchain with OCB updated!!!\nFinal entity ->\n" +
                 JSON.stringify(result.entity));
         }
-
     }
+
     async onError(error) {
         loggerManager.error(('Error received in transaction:  with error: ' + error));
         throw new Error(err);
@@ -78,6 +83,14 @@ class SecureStateSharing {
                 throw new Error('Could not update entity not present in Blockchain');
             }
         }
+    }
+
+    getOrionHandler() {
+        return orionHandler;
+    }
+
+    getBlockchainHandler() {
+        return blockchainHandler;
     }
 }
 

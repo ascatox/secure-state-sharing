@@ -39,13 +39,13 @@ class LoggerManager {
     warn(message) {
         if (!CONFIG.development)
             this.logger.log('warn', chalk.yellow(message));
-        else console.error(message);
+        else console.log(message);
     }
 
     error(error) {
         if (!CONFIG.development)
             this.logger.log('error', chalk.error(error));
-        else console.error(message);
+        else console.error(error);
     }
 
 
