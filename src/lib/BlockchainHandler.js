@@ -5,26 +5,46 @@ const CONFIG = require('../../resources/config.json');
 const peerName = config.organizations[0].peers[CONFIG.peer_number].name;
 let ledgerClient;
 
-
 const LoggerManager = require('./LoggerManager');
 const loggerManager = new LoggerManager();
 
+const operations = new Map([
+    ['POST', 'putEntity'],
+    ['PUT', 'updateEntity'],
+    ['DELETE', 'deleteEntity']
+]);
 
 class BlockchainHandler {
+
     constructor() {
         const ledger = async () => {
             ledgerClient = await nodeLedgerClient.LedgerClient.init(config);
         };
         ledger();
     }
-    async editEntity(entity, isUpdate) {
+
+    async updateEntity(entity, operation) {
         let result = null;
         try {
             if (entity) {
-                if (!isUpdate) //Create
-                    result = await ledgerClient.doInvokeWithTxId('putEntity', [JSON.stringify(entity)]);
-                else //Update
-                    result = await ledgerClient.doInvokeWithTxId('updateEntity', [JSON.stringify(entity)]);
+                let args = [JSON.stringify(entity)];
+                result = await ledgerClient.doInvokeWithTxId(operations.get(operation), args);
+            } else
+                throw new Error('Entity could not be empty or null');
+        } catch (error) {
+            loggerManager.error(error);
+            throw new Error(error);
+        }
+        return result;
+    }
+
+
+    async deleteEntity(entity, operation) {
+        let result = null;
+        try {
+            if (entity) {
+                args = [entity.id, entity.type];
+                result = await ledgerClient.doInvokeWithTxId(operations.get(operation), args);
             } else
                 throw new Error('Entity could not be empty or null');
         } catch (error) {

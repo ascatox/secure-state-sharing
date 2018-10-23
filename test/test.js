@@ -7,9 +7,6 @@ let server = require('../src/server');
 
 const CONFIG = require('../resources/config.json');
 
-const service = CONFIG.service;
-const servicepath = CONFIG.servicePath;
-
 const SecureStateSharing = require('../src/SecureStateSharing');
 const secureStateSharing = new SecureStateSharing();
 const orionHandler = secureStateSharing.getOrionHandler();
@@ -118,6 +115,32 @@ async function putPartialEntity() {
 }
 
 
+async function deleteEntity() {
+    try {
+        entity.pressure.value = -1;
+        chai.request(server)
+            .delete('/v2/entities/Room001/attrs/pressure?type=Room')
+            .set('Content-Type', 'application/json')
+            .set('Fiware-Service', 'testService')
+            .set('Fiware-ServicePath', '/testSubService')
+            .send(entity)
+            .end((err, res) => {
+                assert.isBelow(res.status, 300);
+            });
+        const put = async () => {
+            const entityRes = await orionHandler.getEntity(entity.id, entity.type);
+            const id = entity.id + '_master';
+            const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+            assert.equal(entityRes.entity.pressure.value, -1);
+            assert.equal(entityMasterRes.entity.pressure.value, -1);
+        }
+        setTimeout(put, CONFIG.timeout + TIMEOUT_TEST);
+    } catch (error) {
+        console.error(error);
+        assert.fail(error);
+    }
+}
+
 
 describe('Entities', () => {
     before(() => {
@@ -135,8 +158,7 @@ describe('Entities', () => {
              console.error(error)
          }
      });*/
-
-    describe('/GET entities', () => {
+    describe('/GET Retrieve entities', () => {
         it('it should GET all the entities in OCB', () => {
             chai.request(server)
                 .get('/v2/entities')
@@ -147,13 +169,14 @@ describe('Entities', () => {
         });
     });
 
-
-
-    describe('Creation', () => {
+    describe('/POST Creation', () => {
         it('it should POST Entity and MASTER TWIN on root API', postEntity);
     });
-    describe('Update', () => {
+    describe('/PUT Update', () => {
         it('it should PUT Entity data full entity', putEntireEntity);
         it('it should PUT Entity partial data', putPartialEntity);
+    });
+    describe('/DELETE Delete', () => {
+        it('it should DELETE Entity data', deleteEntity);
     });
 });

@@ -46,9 +46,9 @@ class RequestHandler {
             const pathExclude = CONFIG.path_exclude.split(',');
 
             if (method === 'PUT' ||
-                method === 'POST' 
-                //|| method === 'DELETE' //TODO Delete Context
-                ) {
+                method === 'POST' ||
+                method === 'DELETE' //TODO Delete Context
+            ) {
                 for (let exclusion of pathExclude) {
                     if (req.path.indexOf(exclusion.trim()) >= 0) {
                         return false;

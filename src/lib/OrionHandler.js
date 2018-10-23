@@ -6,8 +6,6 @@ const ngsiConnection = new NGSI.Connection(OCB_URL);
 
 const LoggerManager = require('./LoggerManager');
 const loggerManager = new LoggerManager();
-
-
 const MASTER = '_master';
 class OrionHandler {
 
@@ -26,6 +24,20 @@ class OrionHandler {
             entityUpdObj.id += '_master';
             await this.updateEntity(entityUpdObj);
             return await this.getEntity(id, type);
+        } catch (error) {
+            loggerManager.error(error)
+            throw new Error(error);
+        }
+    }
+
+    async deleteEntityMasterFromChain(entity) {
+        try {
+            const id = JSON.parse(entity).id + MASTER;
+            const type = JSON.parse(entity).type;
+            loggerManager.debug("Entity coming from CHAIN is now: \n" + entity);
+            const entityUpdObj = JSON.parse(entity);
+            entityUpdObj.id += '_master';
+            await this.deleteEntity(id,type);
         } catch (error) {
             loggerManager.error(error)
             throw new Error(error);
@@ -71,8 +83,6 @@ class OrionHandler {
     }
 
     async updateEntity(entity) {
-        //service: config.service,
-        //servicepath: config.subservice
         try {
             return await ngsiConnection.v2.appendEntityAttributes(entity, {
                 service: CONFIG.service,

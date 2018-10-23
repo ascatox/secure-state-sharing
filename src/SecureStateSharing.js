@@ -28,27 +28,30 @@ class SecureStateSharing {
                 } else
                     loggerManager.error('Context not present in Orion');
             }
-            //entityOld = JSON.parse(JSON.stringify(entity));
             //Orion has already build the context local, build the Master
             await orionHandler.createMasterContext(id, type);
-            const isUpdate = await this.isUpdate(requestType, entity);
-            const result = await blockchainHandler.editEntity(entity, isUpdate);
+            // const isUpdate = await this.isUpdate(requestType, entity);
+            let result = null;
+            if (requestType !== 'DELETE')
+                result = await blockchainHandler.updateEntity(entity, requestType);
+            else
+                result = await blockchainHandler.deletentity(entity, requestType);
             if (result) {
                 const txId = result.tx_id.getTransactionID();
-                blockchainHandler.registerTxEvent(txId, this.onEvent, this.onError);
-                // timeoutId = setTimeout(orionHandler.revertLocalChanges(entity.id, entity.type), CONFIG.revertChangesTimeout); //TODO
+                if (requestType !== 'DELETE')
+                    blockchainHandler.registerTxEvent(txId, this.onEventUpdate, this.onError);
+                else
+                    blockchainHandler.registerTxEvent(txId, this.onEventDelete, this.onError);
             }
         } catch (error) {
             loggerManager.error(error);
-            // if (entityOld)
-            //     orionHandler.updateEntity(entityOld);
             orionHandler.revertLocalChanges(entity.id, entity.type);
             throw new Error(error);
         }
     }
 
 
-    async onEvent(transactionId) {
+    async onEventUpdate(transactionId) {
         if (transactionId) {
             loggerManager.debug('Transaction ' + transactionId + ' correctly committed to the chain.');
             if (timeoutId)
@@ -57,6 +60,15 @@ class SecureStateSharing {
             const result = await orionHandler.updateEntityMasterFromChain(entityUpd);
             loggerManager.debug("Update executed by Blockchain with OCB updated!!!\nFinal entity ->\n" +
                 JSON.stringify(result.entity));
+        }
+    }
+
+    async onEventDelete(transactionId) {
+        if (transactionId) {
+            loggerManager.debug('Transaction ' + transactionId + ' correctly committed to the chain.');
+            if (timeoutId)
+                clearTimeout(timeoutId);
+            loggerManager.debug("Delete executed by Blockchain with OCB updated!!!");
         }
     }
 
@@ -69,20 +81,6 @@ class SecureStateSharing {
         const result = await blockchainHandler.getEntity(id, type);
         if (result) return true;
         return false;
-    }
-
-    async isUpdate(requestType, entity) {
-        const isUpdate = requestType === 'PUT';
-        const result = await blockchainHandler.getEntity(entity.id, entity.type);
-        if (!isUpdate) { //create
-            if (result)
-                throw new Error('Could not create entity already present in Blockchain');
-            return false;
-        } else { //Update
-            if (!result) {
-                throw new Error('Could not update entity not present in Blockchain');
-            }
-        }
     }
 
     getOrionHandler() {
