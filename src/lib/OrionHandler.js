@@ -3,7 +3,6 @@ const CONFIG = require('../../resources/config.json');
 const OCB_URL = CONFIG.ocb;
 const NGSI = require('ngsijs');
 const ngsiConnection = new NGSI.Connection(OCB_URL);
-
 const LoggerManager = require('./LoggerManager');
 const loggerManager = new LoggerManager();
 const MASTER = '_master';
@@ -11,7 +10,7 @@ class OrionHandler {
 
     constructor() {
         const run = async () => {
-            await this.createContexts();
+           // await this.createContexts();
         };
     }
 
