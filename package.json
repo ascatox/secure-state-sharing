@@ -15,7 +15,7 @@
     "express": "^4.16.3",
     "http-proxy": "^1.17.0",
     "ngsijs": "^1.1.1",
-    "node-ledger-client": "^1.1.5",
+    "node-ledger-client": "^1.1.7",
     "winston": "^3.1.0"
   },
   "devDependencies": {

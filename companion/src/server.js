@@ -12,9 +12,9 @@ const loggerManager = new LoggerManager();
 let handlers = [];
 
 const eventType = new Map([
-    ['FE_SSS_POST-ENTITY', 'createEntity'],
-    ['FE_SSS_PUT-ENTITY', 'updateEntity'],
-    ['FE_SSS_DELETE-ENTITY', 'deleteEntity']
+    ['FE_SSS_POST-ENTITY', 'POST'],
+    ['FE_SSS_PUT-ENTITY', 'PUT'],
+    ['FE_SSS_DELETE-ENTITY', 'DELETE']
 ]);
 
 
@@ -29,6 +29,7 @@ const ledger = async () => {
 ledger();
 
 process.stdin.resume();
+//TODO process.onExit
 
 function registerAllEvents() {
     const handlers_ = ledgerClient.registerAllPeersChaincodeEvent(ccid, eventName, onEvent, onError)
@@ -46,13 +47,7 @@ async function onEvent(event) {
             loggerManager.info('Event arrived: ' + JSON.stringify(event));
             const payload = JSON.parse(event.payload.toString());
             const eventName = event.name;
-            let method = orionHandler[eventType.get(eventName)];
-            if (eventName.indexOf('DELETE') >= 0) {
-                method.call(this, payload.id, payload.type);
-            } else {
-                const entity = payload;
-                await method.call(this, entity);
-            }
+            orionHandler.executeOperation(eventType.get(eventName), payload);
         } else
             loggerManager.error('Event undefined');
     } catch (error) {
@@ -62,5 +57,5 @@ async function onEvent(event) {
 }
 
 function onError(error) {
-    loggerManager.error.error(error)
+    loggerManager.error (error)
 }

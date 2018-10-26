@@ -2,56 +2,50 @@
 const CONFIG = require('../../resources/config.json');
 const OCB_URL = CONFIG.ocb;
 const NGSI = require('ngsijs');
-const ngsiConnection = new NGSI.Connection(OCB_URL);
+const ngsiConnection = new NGSI.Connection(OCB_URL); //TODO se non va Orion killa il processo!!!
 const LoggerManager = require('./LoggerManager');
 const loggerManager = new LoggerManager();
-const MASTER = '_master';
+//const MASTER = '_master';
+
+const operation = new Map([
+    ['POST', 'createEntity'],
+    ['PUT', 'updateEntity'],
+    ['DELETE', 'deleteEntity'],
+    ['GET', 'getEntity'],
+
+]);
+
+const reverseOperation = new Map([
+    ['POST', 'DELETE'],
+    ['PUT', 'PUT'],
+    ['DELETE', 'POST']
+]);
+
 class OrionHandler {
 
-    constructor() {
-        const run = async () => {
-           // await this.createContexts();
-        };
-    }
+    constructor() {}
 
-    async updateEntityMasterFromChain(entity) {
+    async revertLocalChanges(operationType, payload) {
         try {
-            const id = JSON.parse(entity).id + MASTER;
-            const type = JSON.parse(entity).type;
-            loggerManager.debug("Entity coming from CHAIN is now: \n" + entity);
-            const entityUpdObj = JSON.parse(entity);
-            entityUpdObj.id += '_master';
-            await this.updateEntity(entityUpdObj);
-            return await this.getEntity(id, type);
+            if (payload)
+                await this.executeOperation(reverseOperation.get(operationType), payload);
+            else
+                loggerManager.error('Error coming from Blockchain could not be empty!');
         } catch (error) {
-            loggerManager.error(error)
+            loggerManager.error(error);
             throw new Error(error);
         }
     }
 
-    async deleteEntityMasterFromChain(entity) {
-        try {
-            const id = JSON.parse(entity).id + MASTER;
-            const type = JSON.parse(entity).type;
-            loggerManager.debug("Entity coming from CHAIN is now: \n" + entity);
-            const entityUpdObj = JSON.parse(entity);
-            entityUpdObj.id += '_master';
-            await this.deleteEntity(id,type);
-        } catch (error) {
-            loggerManager.error(error)
-            throw new Error(error);
+    async executeOperation(operationType, payload) {
+        let method = this[operation.get(operationType)];
+        if (operationType.indexOf('DELETE') >= 0) {
+            method.call(this, payload.id, payload.type);
+        } else {
+            const entity = payload;
+            await method.call(this, entity);
         }
     }
-
-    async revertLocalChanges(id_, type_) {
-        if (id_ || type_) {
-            const id = id_ + MASTER;
-            const master = await this.getEntity(id, type_);
-            master.id = id_;
-            await this.updateEntity(master);
-        }
-    }
-
 
     async getEntity(id, type) {
         let entity = null;
@@ -119,7 +113,7 @@ class OrionHandler {
         }
     }
 
-    buildEntityMaster(entity) {
+    /*buildEntityMaster(entity) {
         const entityMASTER = JSON.parse(JSON.stringify(entity.entity));
         entityMASTER.id += MASTER;
         return entityMASTER;
@@ -152,7 +146,7 @@ class OrionHandler {
             loggerManager.error(error)
             throw new Error(error);
         }
-    }
+    }*/
 
 }
 module.exports = OrionHandler;
