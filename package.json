@@ -13,9 +13,9 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "express": "^4.16.3",
-    "http-proxy": "^1.17.0",
+    "express-http-proxy": "^1.4.0",
     "ngsijs": "^1.1.1",
-    "node-ledger-client": "^1.1.7",
+    "node-ledger-client": "^1.1.9",
     "winston": "^3.1.0"
   },
   "devDependencies": {

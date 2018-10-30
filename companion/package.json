@@ -12,7 +12,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "ngsijs": "^1.1.1",
-    "node-ledger-client": "^1.1.7",
+    "node-ledger-client": "^1.1.12",
     "winston": "^3.1.0"
   },
   "devDependencies": {

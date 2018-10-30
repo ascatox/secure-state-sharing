@@ -44,10 +44,14 @@ function unRegisterAllEvents(handlers) {
 async function onEvent(event) {
     try {
         if (event) {
-            loggerManager.info('Event arrived: ' + JSON.stringify(event));
-            const payload = JSON.parse(event.payload.toString());
-            const eventName = event.name;
-            orionHandler.executeOperation(eventType.get(eventName), payload);
+            loggerManager.info('Event arrived: ' + event.event_name);
+            if (event.hasOwnProperty('payload')) {
+                const payloadJson = Buffer.from(event.payload);
+                const payload = JSON.parse(payloadJson);
+                loggerManager.info('Event payload: ' + payloadJson);
+                const eventName = event.event_name;
+                orionHandler.executeOperation(eventType.get(eventName), payload);
+            }
         } else
             loggerManager.error('Event undefined');
     } catch (error) {
@@ -57,5 +61,5 @@ async function onEvent(event) {
 }
 
 function onError(error) {
-    loggerManager.error (error)
+    loggerManager.error(error)
 }

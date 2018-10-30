@@ -3,6 +3,8 @@ const winston = require('winston');
 const CONFIG = require('../../resources/config.json');
 const chalk = require('chalk');
 
+const error_ = chalk.bold.red;
+const warning = chalk.keyword('orange');
 
 class LoggerManager {
 
@@ -25,26 +27,26 @@ class LoggerManager {
 
     debug(message) {
         if (!CONFIG.development)
-            this.logger.log('debug', message);
+            this.logger.log('debug', chalk.blue(message));
         else
             console.log(message);
     }
     info(message) {
         if (!CONFIG.development)
-            this.logger.log('info', chalk.blue(message));
+            this.logger.log('info', chalk.yellow(message));
         else console.log(message);
 
     }
 
     warn(message) {
         if (!CONFIG.development)
-            this.logger.log('warn', chalk.yellow(message));
+            this.logger.log('warn', warning(message));
         else console.log(message);
     }
 
     error(error) {
         if (!CONFIG.development)
-            this.logger.log('error', chalk.error(error));
+            this.logger.log('error', error_(error));
         else console.error(error);
     }
 

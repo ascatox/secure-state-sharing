@@ -30,7 +30,7 @@ class BlockchainHandler {
         try {
             if (entity) {
                 let args = [JSON.stringify(entity)];
-                result = await ledgerClient.doInvokeWithTxId(operation.get(operationType), args);
+                result = await ledgerClient.doInvoke(operation.get(operationType), args);
             } else
                 throw new Error('Entity could not be empty or null');
         } catch (error) {
@@ -46,7 +46,7 @@ class BlockchainHandler {
         try {
             if (entity) {
                 args = [entity.id, entity.type];
-                result = await ledgerClient.doInvokeWithTxId(operation.get(operationType), args);
+                result = await ledgerClient.doInvoke(operation.get(operationType), args);
             } else
                 throw new Error('Entity could not be empty or null');
         } catch (error) {

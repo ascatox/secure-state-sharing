@@ -25,11 +25,8 @@ class SecureStateSharing {
             if (requestType !== 'DELETE')
                 result = await blockchainHandler.editEntity(entity, requestType);
             else
-                result = await blockchainHandler.deletentity(entity, requestType);
-            if (result) {
-                const txId = result.tx_id.getTransactionID();
-                    blockchainHandler.registerTxEvent(txId, this.onEvent, this.onError);
-            } 
+                result = await blockchainHandler.deleteEntity(entity, requestType);
+            loggerManager.debug('Transaction correctly committed to the chain with result: ' + JSON.stringify(result));
         } catch (error) {
             loggerManager.error(error);
             orionHandler.revertLocalChanges(requestType, JSON.parse(error));
@@ -43,7 +40,7 @@ class SecureStateSharing {
             loggerManager.debug('Transaction ' + transactionId + ' correctly committed to the chain.');
             if (timeoutId)
                 clearTimeout(timeoutId);
-          //  let entityUpd = await blockchainHandler.getEntity(id, type);
+            //  let entityUpd = await blockchainHandler.getEntity(id, type);
             //const result = await orionHandler.updateEntityMasterFromChain(entityUpd);
             loggerManager.debug("Modify executed by Blockchain with OCB updated!!!");
             //+JSON.stringify(entityUpd));

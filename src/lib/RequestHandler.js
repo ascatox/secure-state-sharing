@@ -19,7 +19,9 @@ class RequestHandler {
         }
     }
     getId(req) {
-        const idParam = req.params[0].split("/")[2];
+        let idParam;
+        if (req.params && req.params[0])
+            idParam = req.params[0].split("/")[2];
         if (idParam) return idParam;
         if (req.body.id) return req.body.id;
         throw new Error('Entity id not found');
@@ -47,7 +49,8 @@ class RequestHandler {
 
             if (method === 'PUT' ||
                 method === 'POST' ||
-                method === 'DELETE' //TODO Delete Context
+                method === 'DELETE' ||
+                method === 'PATCH' //TODO Delete Context
             ) {
                 for (let exclusion of pathExclude) {
                     if (req.path.indexOf(exclusion.trim()) >= 0) {
@@ -62,5 +65,20 @@ class RequestHandler {
             return false;
         }
     }
+
+    createProxyResData(proxyResData, message) {
+        let data = {};
+        if (proxyResData.length > 0) {
+            data = JSON.parse(proxyResData.toString('utf8'));
+        }
+        data.blockchainStatus = message;
+        return JSON.stringify(data);
+    }
+
+
+
 }
+
+
+
 module.exports = RequestHandler;
