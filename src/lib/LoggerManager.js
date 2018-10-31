@@ -46,7 +46,7 @@ class LoggerManager {
 
     error(error) {
         let message;
-        if (error.hasOwnnProperty('message'))
+        if (error.hasOwnProperty('message'))
             message = error.message;
         else
             message = JSON.stringify(error);
