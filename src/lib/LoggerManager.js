@@ -45,9 +45,14 @@ class LoggerManager {
     }
 
     error(error) {
+        let message;
+        if (error.hasOwnnProperty('message'))
+            message = error.message;
+        else
+            message = JSON.stringify(error);
         if (!CONFIG.development)
-            this.logger.log('error', error_(error));
-        else console.error(error);
+            this.logger.log('error', error_(message));
+        else console.error(message);
     }
 
 

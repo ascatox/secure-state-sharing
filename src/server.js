@@ -6,7 +6,7 @@ const OCB_URL = CONFIG.ocb;
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const proxy = require('express-http-proxy');
+const proxy = require('express-http-proxy'); //https://www.npmjs.com/package/express-http-proxy
 
 const SecureStateSharing = require('./secureStateSharing');
 const secureStateSharing = new SecureStateSharing();
@@ -48,7 +48,7 @@ async function serve(proxyResData, req, res) {
                 return proxyResData;
             }
         } catch (error) {
-            loggerManager.error(JSON.stringify(error));
+            loggerManager.error(error);
             res.status(500);
             return requestHandler.createProxyResData(proxyResData, error.message);
         }

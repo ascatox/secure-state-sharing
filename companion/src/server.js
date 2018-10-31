@@ -57,7 +57,6 @@ async function onEvent(event) {
             loggerManager.error('Event undefined');
     } catch (error) {
         loggerManager.error(error)
-        throw new Error(error);
     }
 }
 
