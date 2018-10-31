@@ -12,6 +12,7 @@ const operation = new Map([
     ['PUT', 'updateEntity'],
     ['DELETE', 'deleteEntity'],
     ['GET', 'getEntity'],
+    ['MIGRATE', 'migrateEntities']
 
 ]);
 
@@ -47,8 +48,23 @@ class OrionHandler {
                 await method.call(this, entity);
             }
         } catch (error) {
-           loggerManager.error(error);
-           throw new Error(error);
+            loggerManager.error(error);
+            throw new Error(error);
+        }
+    }
+    async migrateEntities(entities) {
+        //TODO
+        try {
+            for (const entity of entities) {
+                const isPresent = await this.getEntity(entity.id, entity.type);
+                if (isPresent)
+                    await this.updateEntity(entity);
+                else
+                    await this.createEntity(entity);
+            }
+        } catch (error) {
+            loggerManager.error(error);
+            throw new Error(error);
         }
     }
 

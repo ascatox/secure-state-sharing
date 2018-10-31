@@ -12,6 +12,7 @@ const operation = new Map([
     ['PUT', 'updateEntity'],
     ['DELETE', 'deleteEntity'],
     ['GET', 'getEntity'],
+    ['MIGRATE', 'migrate']
 ]);
 
 class BlockchainHandler {
