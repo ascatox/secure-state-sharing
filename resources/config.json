@@ -1,7 +1,7 @@
 {
     "port": 3026,
-    "development": false,
     "ocb": "http://localhost:1026",
+    "development": false,
     "service": "",
     "servicepath": "",
     "path_exclude": "op",
