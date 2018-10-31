@@ -42,8 +42,9 @@ async function serve(proxyResData, req, res) {
             } else if (requestHandler.isOnBehalfOfChain(req)) { //I'm updating attributes
                 const id = requestHandler.getId(req);
                 const type = requestHandler.getType(req);
-                await secureStateSharing.executeRequest(id, type, req.method);
-                return requestHandler.createProxyResData(proxyResData, 'Operation now in Blockchain');
+                const result = await secureStateSharing.executeRequest(id, type, req.method);
+                res.status(200);
+                return requestHandler.createProxyResData(proxyResData, result);
             } else {
                 return proxyResData;
             }

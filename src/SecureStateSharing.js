@@ -26,7 +26,8 @@ class SecureStateSharing {
                 result = await blockchainHandler.editEntity(entity, requestType);
             else
                 result = await blockchainHandler.deleteEntity(entity, requestType);
-            loggerManager.debug('Transaction correctly committed to the chain with result: ' + JSON.stringify(result));
+                loggerManager.debug('Transaction correctly committed to the chain with result: ' + JSON.stringify(result));
+                return result;
         } catch (error) {
             loggerManager.error(error);
             orionHandler.revertLocalChanges(requestType, JSON.parse(error));
