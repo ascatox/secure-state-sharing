@@ -38,12 +38,17 @@ class OrionHandler {
     }
 
     async executeOperation(operationType, payload) {
-        let method = this[operation.get(operationType)];
-        if (operationType.indexOf('DELETE') >= 0) {
-            method.call(this, payload.id, payload.type);
-        } else {
-            const entity = payload;
-            await method.call(this, entity);
+        try {
+            let method = this[operation.get(operationType)];
+            if (operationType.indexOf('DELETE') >= 0) {
+                method.call(this, payload.id, payload.type);
+            } else {
+                const entity = payload;
+                await method.call(this, entity);
+            }
+        } catch (error) {
+           loggerManager.error(error);
+           throw new Error(error);
         }
     }
 
@@ -112,41 +117,5 @@ class OrionHandler {
             throw new Error(error);
         }
     }
-
-    /*buildEntityMaster(entity) {
-        const entityMASTER = JSON.parse(JSON.stringify(entity.entity));
-        entityMASTER.id += MASTER;
-        return entityMASTER;
-    }
-
-    async createMasterContext(id, type) {
-        try {
-            loggerManager.debug('Building contexs.....');
-            let entity, entityMaster;
-            entity = await this.getEntity(id, type);
-            if (!entity) return;
-            entityMaster = await this.getEntity(id + '_master', type);
-            if (!entityMaster)
-                entityMaster = await this.createEntity(this.buildEntityMaster(entity));
-            loggerManager.debug('Contexts already present -->\n' + JSON.stringify(entity.entity) + '\n' + JSON.stringify(entityMaster.entity));
-        } catch (error) {
-            loggerManager.error(error)
-            throw new Error(error);
-        }
-    }
-
-    async createContext(entity) {
-        try {
-            loggerManager.debug('Building contexs.....');
-            entity = await this.getEntity(id, type);
-            if (entity) return;
-            entity = await this.createEntity(entity);
-            loggerManager.debug('Entity created correctly');
-        } catch (error) {
-            loggerManager.error(error)
-            throw new Error(error);
-        }
-    }*/
-
 }
 module.exports = OrionHandler;

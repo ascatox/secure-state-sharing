@@ -9,7 +9,7 @@ const loggerManager = new LoggerManager();
 
 let id = null;
 let type = null;
-let timeoutId = null;
+
 class SecureStateSharing {
     constructor() {}
 
@@ -38,12 +38,7 @@ class SecureStateSharing {
     async onEvent(transactionId) {
         if (transactionId) {
             loggerManager.debug('Transaction ' + transactionId + ' correctly committed to the chain.');
-            if (timeoutId)
-                clearTimeout(timeoutId);
-            //  let entityUpd = await blockchainHandler.getEntity(id, type);
-            //const result = await orionHandler.updateEntityMasterFromChain(entityUpd);
             loggerManager.debug("Modify executed by Blockchain with OCB updated!!!");
-            //+JSON.stringify(entityUpd));
         }
     }
 

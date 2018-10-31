@@ -2,7 +2,6 @@
 const config = require('../../resources/config-fabric-network.json');
 const nodeLedgerClient = require('node-ledger-client');
 const CONFIG = require('../../resources/config.json');
-const peerName = config.organizations[0].peers[CONFIG.peer_number].name;
 let ledgerClient;
 
 const LoggerManager = require('./LoggerManager');
@@ -54,10 +53,6 @@ class BlockchainHandler {
             throw new Error(error);
         }
         return result;
-    }
-
-    async registerTxEvent(transactionId, onEvent, onError) {
-        return ledgerClient.registerTxEvent(peerName, transactionId, onEvent, onError);
     }
 
     async getEntity(id, type) {

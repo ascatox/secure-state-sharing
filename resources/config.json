@@ -1,12 +1,10 @@
 {
+    "port": 3026,
     "development": false,
     "ocb": "http://localhost:1026",
     "service": "",
     "servicepath": "",
-    "timeout": 2000,
     "path_exclude": "op",
-    "attrs_keyword": "attrs",
-    "peer_number": 0,
-    "logLevel": "debug",
-    "revertChangesTimeout": 86400000 
+    "logLevel": "debug"
+   
 }

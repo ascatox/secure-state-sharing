@@ -30,6 +30,7 @@ ledger();
 
 process.stdin.resume();
 //TODO process.onExit
+//TODO Controllare se esiste un contesto prima di crearlo o cancellarlo
 
 function registerAllEvents() {
     const handlers_ = ledgerClient.registerAllPeersChaincodeEvent(ccid, eventName, onEvent, onError)

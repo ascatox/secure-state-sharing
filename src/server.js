@@ -17,9 +17,6 @@ const requestHandler = new RequestHandler();
 const LoggerManager = require('./lib/LoggerManager');
 const loggerManager = new LoggerManager();
 
-let timeoutId;
-
-//app.use(errorHandler);
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
@@ -47,7 +44,6 @@ async function serve(proxyResData, req, res) {
                 const type = requestHandler.getType(req);
                 await secureStateSharing.executeRequest(id, type, req.method);
                 return requestHandler.createProxyResData(proxyResData, 'Operation now in Blockchain');
-
             } else {
                 return proxyResData;
             }
@@ -61,9 +57,7 @@ async function serve(proxyResData, req, res) {
 }
 app.use('/', proxy(OCB_URL, {
     proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
-        // you can update headers
         //proxyReqOpts.headers['Content-Type'] = 'text/html';
-        // you can change the method
         //proxyReqOpts.method = 'GET';
         return proxyReqOpts;
     },
@@ -80,7 +74,7 @@ app.use('/', proxy(OCB_URL, {
      }*/
 }));
 //app.all("/*", function (req, res));
-app.listen(3026);
+app.listen(CONFIG.port);
 
 function errorHandler(err, res, next) {
     if (res.headersSent) {
