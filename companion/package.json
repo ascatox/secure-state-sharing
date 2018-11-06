@@ -2,9 +2,9 @@
   "name": "secure-state-sharing-companion",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "companion.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node src/companion.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
