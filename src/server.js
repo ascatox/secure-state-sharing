@@ -17,26 +17,37 @@ const requestHandler = new RequestHandler();
 const LoggerManager = require('./lib/LoggerManager');
 const loggerManager = new LoggerManager();
 
+let child;
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-(async function launchCompanion() {
-        try {
-            const {
-                spawn
-            } = require('child_process');
 
-            const child = spawn('node', ['./companion/src/companion.js'], {
-                detached : true,
-                stdio: [process.stdin, process.stdout, process.stderr]
-            }); 
+function on_exit() {
+    console.log('Process Exit');
+    child.kill("SIGINT");
+    process.exit(0)
+}
+
+process.on('SIGINT', on_exit);
+process.on('exit', on_exit);
+
+(async function launchCompanion() {
+    try {
+        const {
+            spawn
+        } = require('child_process');
+
+        child = spawn('node', ['./companion/src/companion.js'], {
+            detached: true,
+            stdio: [process.stdin, process.stdout, process.stderr]
+        });
         //child.unref();
         loggerManager.info('Companion started correctly!');
     } catch (error) {
         loggerManager.error(error)
-        process.exit(0);
+        on_exit();
     }
 })();
 async function serveResponse(proxyResData, req, res) {
