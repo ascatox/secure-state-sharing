@@ -7,12 +7,20 @@ let ledgerClient;
 const LoggerManager = require('./LoggerManager');
 const loggerManager = new LoggerManager();
 
-const operation = new Map([
+const chaincodeOperation = new Map([
     ['POST', 'putEntity'],
     ['PUT', 'updateEntity'],
     ['DELETE', 'deleteEntity'],
     ['GET', 'getEntity'],
-    ['MIGRATE', 'migrate']
+    ['MIGRATION', 'migrate']
+]);
+
+const operation = new Map([
+    ['POST', 'editEntity'],
+    ['PUT', 'editEntity'],
+    ['DELETE', 'deleteEntity'],
+    ['GET', 'getEntity'],
+    ['MIGRATION', 'migrateEntity']
 ]);
 
 class BlockchainHandler {
@@ -24,13 +32,33 @@ class BlockchainHandler {
         ledger();
     }
 
+    async executeOperation(entity, operationType) {
+        try {
+            let method = this[operation.get(operationType)];
+            return await method.call(this, entity, operationType);
+        } catch (error) {
+            loggerManager.error(error);
+            throw new Error(error);
+        }
+    }
+
+    async migrateEntity(entity, operationType) {
+        let result = null;
+        try {
+            result = await ledgerClient.doInvoke(chaincodeOperation.get(operationType), []);
+        } catch (error) {
+            loggerManager.error(error);
+            throw new Error(error);
+        }
+        return result;
+    }
 
     async editEntity(entity, operationType) {
         let result = null;
         try {
             if (entity) {
                 let args = [JSON.stringify(entity)];
-                result = await ledgerClient.doInvoke(operation.get(operationType), args);
+                result = await ledgerClient.doInvoke(chaincodeOperation.get(operationType), args);
             } else
                 throw new Error('Entity could not be empty or null');
         } catch (error) {
@@ -46,7 +74,7 @@ class BlockchainHandler {
         try {
             if (entity) {
                 args = [entity.id, entity.type];
-                result = await ledgerClient.doInvoke(operation.get(operationType), args);
+                result = await ledgerClient.doInvoke(chaincodeOperation.get(operationType), args);
             } else
                 throw new Error('Entity could not be empty or null');
         } catch (error) {
@@ -57,7 +85,7 @@ class BlockchainHandler {
     }
 
     async getEntity(id, type) {
-        return await ledgerClient.doInvoke(operation.get('GET'), [id, type]);
+        return await ledgerClient.doInvoke(chaincodeOperation.get('GET'), [id, type]);
     }
 }
 

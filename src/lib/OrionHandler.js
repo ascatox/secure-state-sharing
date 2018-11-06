@@ -12,7 +12,7 @@ const operation = new Map([
     ['PUT', 'updateEntity'],
     ['DELETE', 'deleteEntity'],
     ['GET', 'getEntity'],
-    ['MIGRATE', 'migrateEntities']
+    ['MIGRATION', 'migrateEntities']
 
 ]);
 
@@ -52,10 +52,12 @@ class OrionHandler {
             throw new Error(error);
         }
     }
+
     async migrateEntities(entities) {
+        const entities_ = JSON.parse(entities);
         //TODO
         try {
-            for (const entity of entities) {
+            for (const entity of entities_) {
                 const isPresent = await this.getEntity(entity.id, entity.type);
                 if (isPresent)
                     await this.updateEntity(entity);

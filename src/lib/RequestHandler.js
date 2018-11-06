@@ -25,7 +25,7 @@ class RequestHandler {
         if (idParam) return idParam;
         if (req.body.id) return req.body.id;
         if (req.path) return req.path.split("/")[3];
-        
+
         throw new Error('Entity id not found');
     }
 
@@ -42,6 +42,12 @@ class RequestHandler {
     }
     isDelete(req) {
         return req.method === 'DELETE';
+    }
+    isMigration(req) {
+        if (req.path.indexOf('migration') >= 0) {
+            return true;
+        }
+        return false;
     }
     isOnBehalfOfChain(req) {
         try {
@@ -77,7 +83,16 @@ class RequestHandler {
         return JSON.stringify(data);
     }
 
-
+    createProxyResDataMigration(proxyResData, message) {
+        let data = {};
+        if (proxyResData.length > 0) {
+            data = JSON.parse(proxyResData.toString('utf8'));
+        }
+        delete data.error;
+        data.description = message;
+        data.blockchainStatus = message;
+        return JSON.stringify(data);
+    }
 
 }
 

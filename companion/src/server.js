@@ -34,7 +34,7 @@ process.stdin.resume();
 
 function registerAllEvents() {
     const handlers_ = ledgerClient.registerAllPeersChaincodeEvent(ccid, eventName, onEvent, onError)
-    loggerManager.debug('Handlers obtained: ' + JSON.stringify(handlers_));
+    loggerManager.debug('COMPANION: Handlers obtained: ' + JSON.stringify(handlers_));
     return handlers_;
 }
 
@@ -45,16 +45,16 @@ function unRegisterAllEvents(handlers) {
 async function onEvent(event) {
     try {
         if (event) {
-            loggerManager.info('Event arrived: ' + event.event_name);
+            loggerManager.info('COMPANION: Event arrived: ' + event.event_name);
             if (event.hasOwnProperty('payload')) {
                 const payloadJson = Buffer.from(event.payload);
                 const payload = JSON.parse(payloadJson);
-                loggerManager.info('Event payload: ' + payloadJson);
+                loggerManager.info('COMPANION: Event payload: ' + payloadJson);
                 const eventName = event.event_name;
                 orionHandler.executeOperation(eventType.get(eventName), payload);
             }
         } else
-            loggerManager.error('Event undefined');
+            loggerManager.error('COMPANION: Event undefined');
     } catch (error) {
         loggerManager.error(error)
     }

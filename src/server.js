@@ -22,8 +22,24 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+(async function launchCompanion() {
+        try {
+            const {
+                spawn
+            } = require('child_process');
 
-async function serve(proxyResData, req, res) {
+            const child = spawn('node', ['./companion/src/server.js'], {
+                detached : true,
+                stdio: [process.stdin, process.stdout, process.stderr]
+            }); 
+        //child.unref();
+        loggerManager.info('Companion started correctly!');
+    } catch (error) {
+        loggerManager.error(error)
+        process.exit(0);
+    }
+})();
+async function serveResponse(proxyResData, req, res) {
     {
         loggerManager.info('redirecting to Orion Context Broker');
         try {
@@ -42,7 +58,8 @@ async function serve(proxyResData, req, res) {
             } else if (requestHandler.isOnBehalfOfChain(req)) { //I'm updating attributes
                 const id = requestHandler.getId(req);
                 const type = requestHandler.getType(req);
-                const result = await secureStateSharing.executeRequest(id, type, req.method);
+                let method = req.method;
+                const result = await secureStateSharing.executeRequest(id, type, method);
                 res.status(200);
                 return requestHandler.createProxyResData(proxyResData, result);
             } else {
@@ -56,19 +73,40 @@ async function serve(proxyResData, req, res) {
 
     }
 }
+
+async function processReq(req) {
+    try {
+        let method = 'MIGRATION';
+        const id = null;
+        const type = null;
+        const result = await secureStateSharing.executeRequest(id, type, method);
+        loggerManager.info('Migration finished correctly')
+    } catch (error) {
+        loggerManager.error(error);
+    }
+}
+
 app.use('/', proxy(OCB_URL, {
     proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
         //proxyReqOpts.headers['Content-Type'] = 'text/html';
         //proxyReqOpts.method = 'GET';
+        const isMigration = requestHandler.isMigration(proxyReqOpts);
+        if (isMigration) {
+            processReq(proxyReqOpts);
+        }
         return proxyReqOpts;
     },
     userResDecorator: function (proxyRes, proxyResData, userReq, userRes) {
+        if (requestHandler.isMigration(userReq)) {
+            userRes.status(200);
+            return requestHandler.createProxyResDataMigration(proxyResData, 'Migration running...');
+        }
         if (proxyResData.length > 0) {
             const data = JSON.parse(proxyResData.toString('utf8'));
             if (data.hasOwnProperty('error'))
                 return proxyResData;
         }
-        return serve(proxyResData, userReq, userRes);
+        return serveResponse(proxyResData, userReq, userRes);
     }
     /* ,proxyErrorHandler: function (err, res, next) {
          errorHandler(err, res);

@@ -8,7 +8,7 @@
   "chaincode": {
     "path": "sss-chaincode-node",
     "name": "sss-chaincode-node",
-    "version": "3.0",
+    "version": "1.5",
     "lang": "NODE"
   },
   "organizations": [{

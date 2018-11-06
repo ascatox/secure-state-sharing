@@ -4,7 +4,7 @@
     "development": false,
     "service": "",
     "servicepath": "",
-    "path_exclude": "op",
+    "path_exclude": "op,subscriptions",
     "logLevel": "debug"
    
 }

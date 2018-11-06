@@ -22,12 +22,11 @@ class SecureStateSharing {
             if (entity && entity.hasOwnProperty('entity'))
                 entity = entity.entity;
             let result = null;
-            if (requestType !== 'DELETE')
-                result = await blockchainHandler.editEntity(entity, requestType);
-            else
-                result = await blockchainHandler.deleteEntity(entity, requestType);
-                loggerManager.debug('Transaction correctly committed to the chain with result: ' + JSON.stringify(result));
-                return result;
+            result = await blockchainHandler.executeOperation(entity, requestType);
+            if (result && requestType === 'MIGRATION')
+                orionHandler.executeOperation('MIGRATION', result);
+            loggerManager.debug('Transaction correctly committed to the chain with result: ' + JSON.stringify(result));
+            return result;
         } catch (error) {
             loggerManager.error(error);
             orionHandler.revertLocalChanges(requestType, JSON.parse(error));
