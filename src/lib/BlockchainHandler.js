@@ -57,7 +57,7 @@ class BlockchainHandler {
         let result = null;
         try {
             if (entity) {
-                let args = [JSON.stringify(entity)];
+                const args = [JSON.stringify(entity)];
                 result = await ledgerClient.doInvoke(chaincodeOperation.get(operationType), args);
             } else
                 throw new Error('Entity could not be empty or null');

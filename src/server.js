@@ -56,7 +56,7 @@ async function serveResponse(proxyResData, req, res) {
         try {
             if (req.path.indexOf('v1') >= 0) {
                 res.status(400).send("Warning!!! v1 APIs not supported use v2 -> http://telefonicaid.github.io/fiware-orion/api/v2/stable/");
-                return;
+                return "";
             }
             if (req.path === '/info') {
                 res.json({
@@ -64,7 +64,7 @@ async function serveResponse(proxyResData, req, res) {
                     "version": "1.0.0",
                     "author": "Antonio Scatoloni"
                 });
-                return;
+                return "";
                 //Editing mode of OCB    
             } else if (requestHandler.isOnBehalfOfChain(req)) { //I'm updating attributes
                 const id = requestHandler.getId(req);

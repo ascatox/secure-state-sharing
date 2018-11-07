@@ -19,9 +19,9 @@ services:
   secure-state-sharing:
      container_name:secure-state-sharing:
      image: faredge/secure-state-sharing:1.0.0
-     environment:
-      - LOGGING_LEVEL = debug
-      - DEVELOPMENT = false
+    #  environment:
+    #   - LOGGING_LEVEL = debug
+    #   - DEVELOPMENT = false
      depends_on:
         - orion
      ports: 
@@ -48,12 +48,12 @@ services:
   secure-state-sharing_1:
      container_name:secure-state-sharing:
      image: faredge/secure-state-sharing:1.0.0
-     environment:
-      - LOGGING_LEVEL = debug
-      - DEVELOPMENT = false
+    #  environment:
+    #   - LOGGING_LEVEL = debug
+    #   - DEVELOPMENT = false
      depends_on:
         - orion_1
      ports: 
-      - "5026:3026"
+      - "4026:3026"
      volumes:
-      - /opt/hyperledger/secure-state-sharing/resources:/usr/src/resources
+      - /opt/hyperledger/secure-state-sharing_1/resources:/usr/src/resources

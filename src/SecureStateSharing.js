@@ -7,15 +7,10 @@ const orionHandler = new OrionHandler();
 const LoggerManager = require('./lib/LoggerManager');
 const loggerManager = new LoggerManager();
 
-let id = null;
-let type = null;
-
 class SecureStateSharing {
     constructor() {}
 
-    async executeRequest(id_, type_, requestType) {
-        id = id_;
-        type = type_;
+    async executeRequest(id, type, requestType) {
         let entity;
         try {
             entity = await orionHandler.getEntity(id, type);
