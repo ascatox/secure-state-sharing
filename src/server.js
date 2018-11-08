@@ -8,10 +8,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const proxy = require('express-http-proxy'); //https://www.npmjs.com/package/express-http-proxy
 
-const SecureStateSharing = require('./secureStateSharing');
+const SecureStateSharing = require('./SecureStateSharing');
 const secureStateSharing = new SecureStateSharing();
 
-const RequestHandler = require('./lib/requestHandler');
+const RequestHandler = require('./lib/RequestHandler');
 const requestHandler = new RequestHandler();
 
 const LoggerManager = require('./lib/LoggerManager');
