@@ -1,4 +1,3 @@
-'use strict';
 const CONFIG = require('../../resources/config.json');
 const OCB_URL = CONFIG.ocb;
 const NGSI = require('ngsijs');
@@ -24,8 +23,16 @@ const reverseOperation = new Map([
 
 class OrionHandler {
 
-    constructor() {}
+    constructor() {
+        let service = CONFIG.service;
+        let servicepath = CONFIG.servicepath;
+    }
 
+    /**
+     * public method used to revert local chainges in case of BlockChain errors
+     * @param {String} operationType 
+     * @param {Object} payload 
+     */
     async revertLocalChanges(operationType, payload) {
         try {
             if (payload)
@@ -76,8 +83,8 @@ class OrionHandler {
             entity = await ngsiConnection.v2.getEntity({
                 id: id,
                 type: type,
-                service: CONFIG.service,
-                servicepath: CONFIG.servicepath
+                service: this.service,
+                servicepath: this.servicepath
             });
         } catch (error) {
             loggerManager.error('Entity ' + id + ' not found on Orion ' + error);
@@ -89,8 +96,8 @@ class OrionHandler {
     async listEntities() {
         try {
             return ngsiConnection.v2.listEntities({
-                service: CONFIG.service,
-                servicepath: CONFIG.servicepath
+                service: this.service,
+                servicepath: this.servicepath
             });
         } catch (error) {
             loggerManager.error(error);
@@ -101,8 +108,8 @@ class OrionHandler {
     async updateEntity(entity) {
         try {
             return await ngsiConnection.v2.appendEntityAttributes(entity, {
-                service: CONFIG.service,
-                servicepath: CONFIG.servicepath
+                service: this.service,
+                servicepath: this.servicepath
             });
         } catch (error) {
             loggerManager.error(error);
@@ -113,8 +120,8 @@ class OrionHandler {
     async createEntity(entity) {
         try {
             return await ngsiConnection.v2.createEntity(entity, {
-                service: CONFIG.service,
-                servicepath: CONFIG.servicepath
+                service: this.service,
+                servicepath: this.servicepath
             });
         } catch (error) {
             loggerManager.error(error);
@@ -127,13 +134,21 @@ class OrionHandler {
             await ngsiConnection.v2.deleteEntity({
                 id: id,
                 type: type,
-                service: CONFIG.service,
-                servicepath: CONFIG.servicepath
+                service: this.service,
+                servicepath: this.servicepath
             });
         } catch (error) {
             loggerManager.error(error);
             throw new Error(error);
         }
+    }
+
+    setService(service){
+        this.service = service;
+    }
+
+    setServicePath(servicepath){
+        this.servicepath = servicepath;
     }
 }
 module.exports = OrionHandler;

@@ -1,4 +1,3 @@
-'use strict';
 const CONFIG = require('../../resources/config.json');
 const OrionHandler = require('./OrionHandler');
 const orionHandler = new OrionHandler();
@@ -74,7 +73,7 @@ class RequestHandler {
         }
     }
 
-    createProxyResData(proxyResData, message) {
+    createProxyResMessage(proxyResData, message) {
         let data = {};
         if (proxyResData.length > 0) {
             data = JSON.parse(proxyResData.toString('utf8'));
@@ -82,7 +81,14 @@ class RequestHandler {
         data.blockchainStatus = message;
         return JSON.stringify(data);
     }
-
+    createProxyResError(proxyResData, error) {
+        let data = {};
+        if (proxyResData.length > 0) {
+            data = JSON.parse(proxyResData.toString('utf8'));
+        }
+        data.blockchainError = error;
+        return JSON.stringify(data);
+    }
     createProxyResDataMigration(proxyResData, message) {
         let data = {};
         if (proxyResData.length > 0) {

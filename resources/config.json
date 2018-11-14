@@ -6,5 +6,4 @@
     "development": false,
     "path_exclude": "op,subscriptions",
     "logLevel": "debug"
-   
 }

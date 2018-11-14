@@ -1,4 +1,3 @@
-'use strict'
 const winston = require('winston');
 const CONFIG = require('../../resources/config.json');
 const chalk = require('chalk');
