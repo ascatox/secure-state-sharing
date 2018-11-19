@@ -27,6 +27,8 @@ services:
       - "3026:3026"
      volumes:
       - /opt/hyperledger/secure-state-sharing/secure-state-sharing/resources:/usr/src/resources
+      - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/src/crypto-config
+
 
 
   mongo_1:  
@@ -55,3 +57,4 @@ services:
       - "4026:3026"
      volumes:
       - /opt/hyperledger/secure-state-sharing/secure-state-sharing_1/resources:/usr/src/resources
+      - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/src/crypto-config
