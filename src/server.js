@@ -31,7 +31,7 @@ process.on('exit', onExit);
             spawn,
         } = require('child_process');
 
-        child = spawn('node', ['./src/companion.js'], {
+        child = spawn('node', ['./companion.js'], {
             detached: true,
             stdio: [process.stdin, process.stdout, process.stderr],
         });

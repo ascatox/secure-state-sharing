@@ -26,7 +26,7 @@ services:
      ports: 
       - "3026:3026"
      volumes:
-      - /opt/hyperledger/secure-state-sharing/resources:/usr/src/resources
+      - /opt/hyperledger/secure-state-sharing/secure-state-sharing/resources:/usr/src/resources
 
 
   mongo_1:  
@@ -54,4 +54,4 @@ services:
      ports: 
       - "4026:3026"
      volumes:
-      - /opt/hyperledger/secure-state-sharing_1/resources:/usr/src/resources
+      - /opt/hyperledger/secure-state-sharing/secure-state-sharing_1/resources:/usr/src/resources
