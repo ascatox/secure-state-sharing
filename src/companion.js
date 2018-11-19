@@ -1,13 +1,13 @@
 
 const nodeLedgerClient = require('node-ledger-client');
-const OrionHandler = require('../../src/lib/OrionHandler');
+const OrionHandler = require('./lib/OrionHandler');
 const orionHandler = new OrionHandler();
-const config = require('../../resources/config-fabric-network.json');
+const config = require('../resources/config-fabric-network.json');
 const ccid = config.chaincode.name;
 const eventName = '^FE_SSS_*';
 let ledgerClient = null;
 
-const LoggerManager = require('../../src/lib/LoggerManager');
+const LoggerManager = require('./lib/LoggerManager');
 const loggerManager = new LoggerManager();
 let handlers = [];
 

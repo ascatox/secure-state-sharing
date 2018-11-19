@@ -3,3 +3,5 @@ node_modules/*
 coverage/*
 companion/node_modules/*
 *-lock.json
+doc/*
+.env

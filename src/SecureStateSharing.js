@@ -8,10 +8,8 @@ const loggerManager = new LoggerManager();
 
 class SecureStateSharing {
    
-    
     constructor() {
         let origEntity = '';
-
     }
 
 

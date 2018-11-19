@@ -42,9 +42,7 @@ async function postEntity() {
             .end((err, res) => {
                 assert.equals(res.status, 201);
                 const post = async () => {
-                    const entityRes = await orionHandler.getEntity(entity.id, entity.type);
-                    const id = entity.id + '_master';
-                    const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+                    const entityMasterRes = await orionHandler.getEntity(entity.id, entity.type);
                     assert.equal(entityRes.entity.temperature.value, entityMasterRes.entity.temperature.value);
                     assert.equal(entityRes.entity.pressure.value, entityMasterRes.entity.pressure.value);
                 }
@@ -72,9 +70,7 @@ async function putEntireEntity() {
                 assert.isBelow(res.status, 300);
             });
         const put = async () => {
-            const entityRes = await orionHandler.getEntity(entity.id, entity.type);
-            const id = entity.id + '_master';
-            const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+            const entityMasterRes = await orionHandler.getEntity(entity.id, entity.type);
             assert.equal(entityRes.entity.temperature.value, 6666);
             assert.equal(entityRes.entity.pressure.value, 0);
 
@@ -102,7 +98,7 @@ async function putPartialEntity() {
             });
         const put = async () => {
             const entityRes = await orionHandler.getEntity(entity.id, entity.type);
-            const id = entity.id + '_master';
+            const id = entity.id;
             const entityMasterRes = await orionHandler.getEntity(id, entity.type);
             assert.equal(entityRes.entity.pressure.value, -1);
             assert.equal(entityMasterRes.entity.pressure.value, -1);
@@ -128,9 +124,7 @@ async function deleteEntity() {
                 assert.isBelow(res.status, 300);
             });
         const put = async () => {
-            const entityRes = await orionHandler.getEntity(entity.id, entity.type);
-            const id = entity.id + '_master';
-            const entityMasterRes = await orionHandler.getEntity(id, entity.type);
+            const entityMasterRes = await orionHandler.getEntity(entity.id, entity.type);
             assert.equal(entityRes.entity.pressure.value, -1);
             assert.equal(entityMasterRes.entity.pressure.value, -1);
         }

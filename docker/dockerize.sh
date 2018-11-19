@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "$1" == "" ]; then
 	echo "Insert the version of your package: '1.0.0'"

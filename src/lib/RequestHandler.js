@@ -17,6 +17,7 @@ class RequestHandler {
             throw new Error(error);
         }
     }
+
     getId(req) {
         let idParam;
         if (req.params && req.params[0])
@@ -39,15 +40,18 @@ class RequestHandler {
     isUpdate(req) {
         return req.method === 'PUT';
     }
+
     isDelete(req) {
         return req.method === 'DELETE';
     }
+
     isMigration(req) {
         if (req.path.indexOf('migration') >= 0) {
             return true;
         }
         return false;
     }
+
     isOnBehalfOfChain(req) {
         try {
             const route = req.route;
@@ -81,6 +85,7 @@ class RequestHandler {
         data.blockchainStatus = message;
         return JSON.stringify(data);
     }
+    
     createProxyResError(proxyResData, error) {
         let data = {};
         if (proxyResData.length > 0) {
