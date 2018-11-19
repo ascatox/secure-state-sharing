@@ -17,7 +17,6 @@ services:
    command:  -dbhost mongo
   
   secure-state-sharing:
-     container_name:secure-state-sharing:
      image: faredge/secure-state-sharing:1.0.0
     #  environment:
     #   - LOGGING_LEVEL = debug
@@ -46,7 +45,6 @@ services:
    command:  -dbhost mongo_1
   
   secure-state-sharing_1:
-     container_name:secure-state-sharing:
      image: faredge/secure-state-sharing:1.0.0
     #  environment:
     #   - LOGGING_LEVEL = debug
