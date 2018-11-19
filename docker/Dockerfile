@@ -1,12 +1,12 @@
 FROM node:8
 
 # Create app directory
-RUN mkdir -p /usr/src/app
-COPY ./app /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /usr/app/src
+COPY ./app /usr/app/src
+WORKDIR /usr/app/
 
 # Install app dependencies
-COPY ./app/package.json /usr/src/app/
+COPY ./app/package.json /usr/app/
 
 RUN npm install --production
 
