@@ -26,8 +26,8 @@ services:
      ports: 
       - "3026:3026"
      volumes:
-      - /opt/hyperledger/secure-state-sharing/secure-state-sharing/resources:/usr/src/resources
-      - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/src/crypto-config
+      - /opt/hyperledger/secure-state-sharing/secure-state-sharing/resources:/usr/app/resources
+      - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/app/crypto-config
 
 
 
@@ -56,5 +56,5 @@ services:
      ports: 
       - "4026:3026"
      volumes:
-      - /opt/hyperledger/secure-state-sharing/secure-state-sharing_1/resources:/usr/src/resources
-      - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/src/crypto-config
+      - /opt/hyperledger/secure-state-sharing/secure-state-sharing_1/resources:/usr/app/resources
+      - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/app/crypto-config
