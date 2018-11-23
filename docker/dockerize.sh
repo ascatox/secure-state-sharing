@@ -5,6 +5,6 @@ if [ "$1" == "" ]; then
 	exit 0
 fi
 rm -rf ../resources
-mv ../resources-docker ../resources 
+mv resources ../resources 
 docker build -t faredge/secure-state-sharing:$1 .
 
