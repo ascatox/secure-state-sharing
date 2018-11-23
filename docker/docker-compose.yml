@@ -30,7 +30,6 @@ services:
       - /opt/hyperledger/fabric1.3/configuration-network-fabric/crypto-config:/usr/app/crypto-config
 
 
-
   mongo_1:  
    image: mongo:3.4
    command: --nojournal
